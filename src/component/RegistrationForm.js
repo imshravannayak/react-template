@@ -7,7 +7,7 @@ function RegistrationForm()
         confirmPassword: "",
         firstName: "",
         lastName: "",
-        successMessage: null s
+        successMessage: null 
     })
     const handleChange=(e)=>{
         const {id,value} = e.target
