@@ -1,5 +1,6 @@
 import { useState } from "react"
-function RegistrationForm()
+import { json } from "react-router-dom";
+function RegistrationForm({showAlert})
 {
     const [state , setState] = useState({
         email : "",
@@ -12,13 +13,34 @@ function RegistrationForm()
     const handleChange=(e)=>{
         const {id,value} = e.target
         setState(prevState => {
-            console.log(prevState); // prints the current state
             return { ...prevState, [id]: value };
           });
     }
     const handleSubmit=(e)=>{
         e.preventDefault();
-        console.log(e)
+        sentDetailToServer();
+    }
+    const sentDetailToServer=()=>{
+      const payload ={
+        "first_name":state.firstName,
+        "last_name":state.lastName,
+        "email":state.email,
+        "password":state.password,
+      };
+      fetch('http://localhost:5000/api/registration',{
+        method:"POST",
+        headers:{
+          'Content-type':'application/json'
+        },
+        body:JSON.stringify(payload)
+      }).then(response=>response.json()).then(
+        data=>{ if(data.email){
+          showAlert({ title: 'Success', message: 'saved user data', type: 'success' })
+        }
+          
+    }).catch(error => {
+      console.log(error)
+    });
     }
     return(
         <>
@@ -48,8 +70,8 @@ function RegistrationForm()
                     <input
                       type="text"
                       className="form-control form-control-user"
-                      id="exampleLastName"
-                      placeholder="Last Name"
+                      id="lastName"
+                      placeholder="Last Name" value ={state.lastName} onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -57,8 +79,8 @@ function RegistrationForm()
                   <input
                     type="email"
                     className="form-control form-control-user"
-                    id="exampleInputEmail"
-                    placeholder="Email Address"
+                    id="email"
+                    placeholder="Email Address" value ={state.email} onChange={handleChange}
                   />
                 </div>
                 <div className="form-group row">
@@ -66,16 +88,16 @@ function RegistrationForm()
                     <input
                       type="password"
                       className="form-control form-control-user"
-                      id="exampleInputPassword"
-                      placeholder="Password"
+                      id="password"
+                      placeholder="Password" value ={state.password} onChange={handleChange}
                     />
                   </div>
                   <div className="col-sm-6">
                     <input
-                      type="password"
+                      type="confirmPassword"
                       className="form-control form-control-user"
                       id="exampleRepeatPassword"
-                      placeholder="Repeat Password"
+                      placeholder="Repeat Password" value ={state.confirmPassword} onChange={handleChange}
                     />
                   </div>
                 </div>
